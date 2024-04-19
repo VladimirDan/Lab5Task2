@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Editor</title>
+    <style>
+        #editor {
+            width: 400px;
+            height: 200px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .active {
+            background-color: lightgray;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div id="editor" contenteditable="true"></div>
+        <div>
+            <button onclick="toggleFormat('bold')" id="boldButton">Напівжирний</button>
+            <button onclick="toggleFormat('italic')" id="italicButton">Нахил</button>
+            <button onclick="toggleFormat('underline')" id="underlineButton">Підкреслення</button>
+            <input type="color" id="colorPicker" onchange="changeColor()">
+            <button onclick="toggleCase()" id="caseButton">Змінити регістр</button>
+        </div>
+    </div>
+    <script>
+        let isUpperCase = false;
+
+        function toggleFormat(command) {
+            var button = document.getElementById(command + 'Button');
+            var isApplied = document.queryCommandState(command);
+            if (isApplied) {
+                document.execCommand(command, false, null);
+                button.classList.remove('active');
+            } else {
+                document.execCommand(command, false, true);
+                button.classList.add('active');
+            }
+        }
+
+        function changeColor() {
+            var color = document.getElementById("colorPicker").value;
+            document.execCommand('foreColor', false, color);
+        }
+
+        function toggleCase() {
+            isUpperCase = !isUpperCase;
+            var button = document.getElementById('caseButton');
+            button.classList.toggle('active');
+        }
+
+        document.getElementById("editor").addEventListener("keypress", function(event) {
+            var character = event.key;
+            if (isUpperCase) {
+                character = character.toUpperCase();
+            } else {
+                character = character.toLowerCase();
+            }
+            document.execCommand("insertText", false, character);
+            event.preventDefault(); // Відмінити дію введення символу за замовчуванням
+        });
+    </script>
+</body>
+</html>
